@@ -1,0 +1,443 @@
+## Structure of the project
+.
+├── README.md
+├── package.json
+└── src
+    ├── app.js
+    ├── config.js
+    ├── controllers
+    │   ├── authController.js
+    │   └── userController.js
+    ├── db.js
+    ├── index.js
+    ├── middlewares
+    │   └── authenticateToken.js
+    ├── models
+    │   └── userModel.js
+    └── routes
+        ├── authRoutes.js
+        └── userRoutes.js
+
+6 directories, 12 files
+
+## Project code:
+**./.gitignore**
+```
+# Archivos generados por Node.js
+node_modules/
+
+# Archivos de log y temporales
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.pid
+*.seed
+*.pid.lock
+
+# Archivos de configuración
+.env
+.env.*
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Archivos de IDE
+.idea/
+.vscode/
+*.iml
+
+# Archivos de construcción
+dist/
+build/
+out/
+public/
+coverage/
+
+```
+
+**./README.md**
+```
+# Backend de Nodejs
+
+Este es mi proyecto de Node.js generado con ChatGPT 3.5. Aquí se encuentra una breve descripción del proyecto.
+
+## Instalación
+
+Para instalar este proyecto, sigue estos pasos:
+
+1. Clona el repositorio en tu máquina local.
+2. Instala las dependencias utilizando `npm install`.
+
+## Uso
+
+Para ejecutar el proyecto, utiliza el siguiente comando:
+
+```
+npm start
+```
+
+
+## Contribución
+
+Si quieres contribuir a este proyecto, por favor sigue estos pasos:
+
+1. Haz un fork del repositorio.
+2. Crea una nueva rama (`git checkout -b feature/nueva-funcionalidad`).
+3. Haz tus cambios y haz un commit (`git commit -m "Agregué una nueva funcionalidad"`).
+4. Envía tus cambios al repositorio remoto (`git push origin feature/nueva-funcionalidad`).
+5. Crea un pull request para que tus cambios sean revisados.
+
+## Licencia
+
+Este proyecto está licenciado bajo la Licencia MIT. Ver el archivo `LICENSE` para más información.
+
+```
+
+**./package.json**
+```
+{
+  "name": "backend-gpttest",
+  "version": "1.0.0",
+  "description": "Descripción del proyecto",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js"
+  },
+  "keywords": [
+    "Node.js",
+    "Express",
+    "MongoDB"
+  ],
+  "author": "Tu nombre",
+  "license": "MIT",
+  "dependencies": {
+    "bcrypt": "^5.1.0",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.0",
+    "mongoose": "^7.0.3"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}
+
+```
+
+**./src/app.js**
+```
+// app.js
+import express from 'express';
+import authRoutes from './routes/authRoutes.js';
+import userRoutes from './routes/userRoutes.js';
+
+const app = express();
+
+// Configurar middlewares
+app.use(express.json());
+
+// Configurar rutas
+app.use('/auth', authRoutes);
+app.use('/users', userRoutes);
+
+export default app 
+```
+
+**./src/config.js**
+```
+export default {
+  mongoURI: 'mongodb://localhost:27017/nombre_de_la_base_de_datos',
+  secretKey: 'clave_secreta_para_jsonwebtoken'
+};
+```
+
+**./src/controllers/authController.js**
+```
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import config from '../config.js';
+import User from '../models/userModel.js';
+
+export const register = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Verificar si ya existe un usuario con el mismo correo electrónico
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: 'Ya existe un usuario con el mismo correo electrónico' });
+    }
+
+    // Crear un nuevo usuario
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = new User({ email, password: hashedPassword });
+    await newUser.save();
+
+    // Generar un token de acceso
+    const accessToken = jwt.sign({ userId: newUser._id }, config.secretKey);
+
+    // Enviar una respuesta al cliente
+    res.status(201).json({ accessToken });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Ha ocurrido un error al registrar el usuario' });
+  }
+};
+
+export const login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Verificar si el correo electrónico y la contraseña son correctos
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(401).json({ message: 'Credenciales inválidas' });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: 'Credenciales inválidas' });
+    }
+
+    // Generar un token de acceso
+    const accessToken = jwt.sign({ userId: user._id }, config.secretKey);
+
+    // Enviar una respuesta al cliente
+    res.status(200).json({ accessToken });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Ha ocurrido un error al iniciar sesión' });
+  }
+};
+
+```
+
+**./src/controllers/userController.js**
+```
+import User from '../models/userModel.js';
+
+export const getUsers = async (req, res) => {
+  try {
+    // Obtener todos los usuarios de la base de datos
+    const users = await User.find();
+
+    // Enviar una respuesta al cliente
+    res.status(200).json(users);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Ha ocurrido un error al obtener los usuarios' });
+  }
+};
+
+export const getUserById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Buscar un usuario por su ID en la base de datos
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ message: 'Usuario no encontrado' });
+    }
+
+    // Enviar una respuesta al cliente
+    res.status(200).json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Ha ocurrido un error al obtener el usuario' });
+  }
+};
+
+export const updateUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { email, password } = req.body;
+
+    // Buscar un usuario por su ID en la base de datos
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ message: 'Usuario no encontrado' });
+    }
+
+    // Actualizar el correo electrónico y la contraseña del usuario
+    if (email) user.email = email;
+    if (password) user.password = await bcrypt.hash(password, 10);
+    await user.save();
+
+    // Enviar una respuesta al cliente
+    res.status(200).json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Ha ocurrido un error al actualizar el usuario' });
+  }
+};
+
+export const deleteUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Buscar un usuario por su ID en la base de datos
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ message: 'Usuario no encontrado' });
+    }
+
+    // Eliminar el usuario de la base de datos
+    await user.remove();
+
+    // Enviar una respuesta al cliente
+    res.status(200).json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Ha ocurrido un error al eliminar el usuario' });
+  }
+};
+
+```
+
+**./src/db.js**
+```
+import mongoose from 'mongoose';
+import config from './config.js';
+
+const connectDB = async () => {
+  try {
+    // Crear conexión a MongoDB utilizando la URI de configuración
+    const connection = await mongoose.connect(config.mongoURI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+
+    // Manejador de evento 'connected' para indicar la conexión exitosa a MongoDB
+    connection.connection.on('connected', () => {
+      console.log('Conexión exitosa a MongoDB');
+    });
+
+    // Manejador de evento 'error' para capturar errores en la conexión a MongoDB
+    connection.connection.on('error', (error) => {
+      console.error(`Error al conectar con MongoDB: ${error.message}`);
+    });
+
+    // Manejador de evento 'disconnected' para indicar la desconexión de MongoDB
+    connection.connection.on('disconnected', () => {
+      console.log('Desconexión de MongoDB');
+    });
+
+    // Manejador de evento 'reconnected' para indicar la reconexión a MongoDB
+    connection.connection.on('reconnected', () => {
+      console.log('Reconexión exitosa a MongoDB');
+    });
+
+  } catch (error) {
+    console.error(`Error al conectar con MongoDB: ${error.message}`);
+    process.exit(1);
+  }
+};
+
+export default connectDB;
+
+```
+
+**./src/index.js**
+```
+// src/index.js
+import app from "./app.js";
+import connectDB from "./db.js";
+
+// Conectarse a la base de datos de MongoDB
+connectDB();
+
+// Iniciar el servidor
+app.listen(3000, () => {
+  console.log("Servidor iniciado en el puerto 3000");
+});
+
+```
+
+**./src/middlewares/authenticateToken.js**
+```
+// src/middlewares/authenticateToken.js
+import jwt from 'jsonwebtoken';
+import config from '../config.js';
+import User from '../models/userModel.js';
+
+const authenticateToken = async (req, res, next) => {
+  try {
+    const authorizationHeader = req.headers.authorization;
+    const accessToken = authorizationHeader && authorizationHeader.split(' ')[1];
+    if (!accessToken) {
+      return res.status(401).json({ message: 'No se ha proporcionado un token de acceso' });
+    }
+
+    const decodedToken = jwt.verify(accessToken, config.secretKey);
+    const user = await User.findById(decodedToken.userId);
+    if (!user) {
+      return res.status(401).json({ message: 'Token de acceso no válido' });
+    }
+
+    req.user = user;
+    next();
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Ha ocurrido un error al autenticar el token de acceso' });
+  }
+};
+
+export default authenticateToken;
+
+```
+
+**./src/models/userModel.js**
+```
+// src/models/userModel.js
+import mongoose from 'mongoose';
+
+const userSchema = new mongoose.Schema({
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+});
+
+const User = mongoose.model('User', userSchema);
+
+export default User;
+```
+
+**./src/routes/authRoutes.js**
+```
+// src/routes/authRoutes.js
+import express from 'express';
+import { register, login } from '../controllers/authController.js';
+
+const router = express.Router();
+
+// Rutas para registrarse e iniciar sesión
+router.post('/register', register);
+router.post('/login', login);
+
+export default router;
+
+```
+
+**./src/routes/userRoutes.js**
+```
+// src/routes/userRoutes.js
+import express from 'express';
+import { getUsers, getUserById, updateUser, deleteUser } from '../controllers/userController.js';
+import authenticateToken from '../middlewares/authenticateToken.js';
+
+const router = express.Router();
+
+// Rutas para obtener y modificar los datos de los usuarios
+router.get('/', authenticateToken, getUsers);
+router.get('/:id', authenticateToken, getUserById);
+router.patch('/:id', authenticateToken, updateUser);
+router.delete('/:id', authenticateToken, deleteUser);
+
+export default router;
+
+```
+
