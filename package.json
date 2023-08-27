@@ -1,5 +1,5 @@
 {
-	"name": "backend-gpttest",
+	"name": "backend-mongo",
 	"version": "1.0.0",
 	"description": "Descripción del proyecto",
 	"main": "index.js",

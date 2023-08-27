@@ -1,33 +1,70 @@
-# Backend de Nodejs
+# Backend-Mongo
 
-Este es mi proyecto de Node.js generado con ChatGPT 3.5. Aquí se encuentra una breve descripción del proyecto.
+This is a simple Node.js backend application that uses MongoDB as a data store.
 
-## Instalación
+## Project Structure
 
-Para instalar este proyecto, sigue estos pasos:
+    .
+    ├── app
+    │   ├── config.js
+    │   ├── controllers
+    │   │   └── userController.js
+    │   ├── db.js
+    │   ├── models
+    │   │   └── userModel.js
+    │   ├── routes
+    │   │   └── userRoutes.js
+    │   └── server.js
+    ├── index.js
+    └── package.json
 
-1. Clona el repositorio en tu máquina local.
-2. Instala las dependencias utilizando `npm install`.
+## Getting Started
 
-## Uso
+### Prerequisites
 
-Para ejecutar el proyecto, utiliza el siguiente comando:
+- Node.js
+- MongoDB
 
+### Installation
+
+1. Clone the repo
+
+```sh
+git clone https://github.com/Jupalaja/mongo-backend.git
 ```
-npm start
+
+2. Install NPM packages
+
+```sh
+npm install
 ```
 
+## Usage
 
-## Contribución
+1. Rename `.env.example` to `.env` and update the value of `MONGO_URL` with your MongoDB connection string.
+2. Start the application
 
-Si quieres contribuir a este proyecto, por favor sigue estos pasos:
+```sh
+npm run dev
+```
 
-1. Haz un fork del repositorio.
-2. Crea una nueva rama (`git checkout -b feature/nueva-funcionalidad`).
-3. Haz tus cambios y haz un commit (`git commit -m "Agregué una nueva funcionalidad"`).
-4. Envía tus cambios al repositorio remoto (`git push origin feature/nueva-funcionalidad`).
-5. Crea un pull request para que tus cambios sean revisados.
+The API will serve on `http://localhost:3000`.
 
-## Licencia
+## API Endpoints
 
-Este proyecto está licenciado bajo la Licencia MIT. Ver el archivo `LICENSE` para más información.
+The following endpoints are available:
+
+- GET `/users`: Get all users
+- GET `/users/:id`: Get a user by id
+- POST `/users`: Create a new user
+- PATCH `/users/:id`: Update a user by id
+- DELETE `/users/:id`: Delete a user by id
+- GET `/users/search`: Search users by email
+
+## Contributing
+
+Any contributions you make are **greatly appreciated**.
+
+## License
+
+Distributed under the MIT License.
