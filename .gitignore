@@ -1,3 +1,6 @@
+# Ignored files
+output.txt
+
 # Archivos generados por Node.js
 node_modules/
 
