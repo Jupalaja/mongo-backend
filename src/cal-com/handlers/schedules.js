@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 dotenv.config();
 import axios from "axios";
-import { decrypt } from "../utils/encryptionUtils.js";
+import { decrypt } from "./utilities/encryption.js";
 
 const API_URL = process.env.BASE_URL;
 
