@@ -2,7 +2,8 @@
 
 tmp_file="temp.txt"
 
-ignored_files=("node_modules" "output.txt" "temp.txt" "tree_script.sh" "package-lock.json" "ignored_files" ".git" ".env" ".gitignore")
+ignored_files=("README.md" "node_modules" "output.txt" "temp.txt" "tree_script.sh" "package-lock.json" "ignored_files" ".git" ".env" ".gitignore")
+
 ignore_pattern=$(IFS='|'; echo "${ignored_files[*]}")
 
 echo "## Structure of the project" > "$tmp_file"

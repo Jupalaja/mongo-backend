@@ -1,5 +1,5 @@
-import server from "./app/server.js";
-import connectDB from "./app/db.js";
+import server from "./src/server.js";
+import connectDB from "./src/db.js";
 
 connectDB();
 server.listen(3000, () => {
