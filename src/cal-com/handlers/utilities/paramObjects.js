@@ -6,6 +6,7 @@ export const events = [
 		length: 60,
 		description: "Clase virtual con Juan Lasso",
 		metadata: {},
+		slotInterval: 60,
 	},
 	{
 		title: "Clase presencial",
@@ -14,5 +15,6 @@ export const events = [
 		length: 60,
 		description: "Clase presencial con Juan Lasso",
 		metadata: {},
+		slotInterval: 60,
 	},
 ];

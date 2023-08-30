@@ -16,16 +16,18 @@ async function createNewUser(apiKey) {
 	const userId = await idFromApiKey(apiKey);
 	apiKey = await createApiKey(apiKey);
 
-	const userBasicInfo = await addUsersBasicInfo(decrypt(apiKey));
 	let user = {
 		userId,
 		apiKey,
-		...userBasicInfo,
 	};
+
+	const userBasicInfo = await addUsersBasicInfo(decrypt(apiKey));
+	user = { ...user, ...userBasicInfo };
 
 	await verifyEvents(user);
 	let userAvail = await patchUserSchedule(user);
 	user = { ...user, userAvail };
+
 	return user;
 }
 
@@ -35,7 +37,8 @@ export const useApiKey = async (req, res) => {
 		const userId = await idFromApiKey(apiKey);
 		await validateUserExist(userId);
 
-		const newUser = new User(createNewUser(apiKey));
+		const user = await createNewUser(apiKey);
+		const newUser = new User(user);
 		await newUser.save();
 
 		res.status(201).json(newUser);
