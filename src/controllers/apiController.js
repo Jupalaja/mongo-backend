@@ -45,7 +45,7 @@ export const useApiKey = async (req, res) => {
 	} catch (error) {
 		console.error(error);
 		res.status(500).json({
-			message: `Ha ocurrido un error al crear el usuario; ${error}`,
+			message: `${error}`,
 		});
 	}
 };
