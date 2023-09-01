@@ -12,7 +12,7 @@ async function authenticate() {
 	return auth;
 }
 
-async function getStudent(id) {
+async function getUser(id) {
 	const auth = await authenticate();
 	const sheets = google.sheets({ version: "v4", auth });
 	const targetRow = parseInt(id) + 1;
@@ -48,7 +48,7 @@ async function getStudent(id) {
 	};
 }
 
-async function addStudentRow(newRow) {
+async function addUserRow(newRow) {
 	const auth = await authenticate();
 	const sheetAPI = google.sheets({ version: "v4", auth });
 
@@ -88,4 +88,4 @@ async function addStudentRow(newRow) {
 	return { message: "Row added successfully" };
 }
 
-export { getStudent, addStudentRow };
+export { getUser, addUserRow };

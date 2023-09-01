@@ -1,24 +1,22 @@
-import { getUsers } from "../controllers/userController.js";
+import User from "../models/userModel.js";
 import { transformObject } from "../cal-com/handlers/utilities/transformObject.js";
-import { addStudentRow } from "../cal-com/handlers/services/googleSheetsService.js";
+import { addUserRow } from "../cal-com/handlers/services/googleSheetsService.js";
 
 export const sendUsers = async (req, res) => {
 	try {
-		const usersList = await getUsers(req, res);
+		const usersList = await User.find();
 
-		console.log("The students Object");
-		console.log(usersList);
+		const users = usersList.map((user) => {
+			const data = JSON.parse(JSON.stringify(user));
+			const { userId, name, email, userAvail } = data;
+			return { userId, name, email, userAvail };
+		});
 
-		// const users = usersList.map((user) => {
-		// 	const { userId, apiKey, name, email, userAvail } = user;
-		// 	return { userId, apiKey, name, email, userAvail };
-		// });
+		const transformedUsers = users.map((user) => transformObject(user));
 
-		// console.log(users);
-
-		//const transformedUsers = users.map((user) => transformObject(user));
-
-		//console.log(transformedUsers);
+		for (const user of transformedUsers) {
+			await addUserRow(user);
+		}
 
 		res.status(200).json({ message: "Data processed and sent successfully " });
 	} catch (error) {
