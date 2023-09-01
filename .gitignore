@@ -4,6 +4,9 @@ output.txt
 # Archivos generados por Node.js
 node_modules/
 
+#Google API secrets
+secrets.json
+
 # Archivos de log y temporales
 logs/
 *.log
