@@ -80,12 +80,12 @@ async function verifyEvents(user) {
 	const hasPresencial = userEvents.some((event) => event.slug === "presencial");
 	const slugs = userEvents.map((event) => event.slug);
 
-	if (!hasVirtual || !hasPresencial || slugs.length !== 2) {
-		await deleteEvents(user);
-		await addNewEvents(user);
-	} else {
-		console.info("User already has the correct events");
-	}
+	//if (!hasVirtual || !hasPresencial || slugs.length !== 2) {
+	await deleteEvents(user);
+	await addNewEvents(user);
+	//} else {
+	console.info("User already has the correct events");
+	//}
 }
 
 export { getUserEvents, verifyEvents };

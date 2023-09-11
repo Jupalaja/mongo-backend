@@ -12,40 +12,51 @@ async function authenticate() {
 	return auth;
 }
 
-async function getUser(id) {
+async function getUser() {
 	const auth = await authenticate();
 	const sheets = google.sheets({ version: "v4", auth });
-	const targetRow = parseInt(id) + 1;
-	const range = `Horarios!A${targetRow}:I${targetRow}`;
+	const range = `Horarios!A2:M`;
 
 	const { data } = await sheets.spreadsheets.values.get({
 		spreadsheetId: process.env.SHEET_ID,
 		range,
 	});
 
-	const [
-		name,
-		email,
-		monday,
-		tuesday,
-		wednesday,
-		thursday,
-		friday,
-		saturday,
-		sunday,
-	] = data.values[0];
+	const students = data.values.map((row) => {
+		const [
+			name,
+			email,
+			monday,
+			tuesday,
+			wednesday,
+			thursday,
+			friday,
+			saturday,
+			sunday,
+			elementary,
+			middle,
+			high,
+			zone,
+		] = row;
 
-	return {
-		name,
-		email,
-		monday,
-		tuesday,
-		wednesday,
-		thursday,
-		friday,
-		saturday,
-		sunday,
-	};
+		return {
+			name,
+			email,
+			monday,
+			tuesday,
+			wednesday,
+			thursday,
+			friday,
+			saturday,
+			sunday,
+			elementary,
+			middle,
+			high,
+			zone,
+		};
+	});
+
+	return students;
 }
 
 async function addUserRow(newRow) {

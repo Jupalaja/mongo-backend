@@ -1,6 +1,9 @@
 import User from "../models/userModel.js";
 import { transformObject } from "../cal-com/handlers/utilities/transformObject.js";
-import { addUserRow } from "../cal-com/handlers/services/googleSheetsService.js";
+import {
+	getUser,
+	addUserRow,
+} from "../cal-com/handlers/services/googleSheetsService.js";
 
 export const sendUsers = async (req, res) => {
 	try {
@@ -25,4 +28,9 @@ export const sendUsers = async (req, res) => {
 			message: "An error occurred while processing and sending the data",
 		});
 	}
+};
+
+export const getUsers = async (req, res) => {
+	const student = await getUser(req.params.id);
+	res.json(student);
 };

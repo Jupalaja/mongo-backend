@@ -1,10 +1,10 @@
 import express from "express";
-import {
-	sendUsers
-} from "../controllers/sheetsController.js";
+import { getUsers, sendUsers } from "../controllers/sheetsController.js";
 
 const router = express.Router();
 
-router.get("/", sendUsers);
+router.post("/", sendUsers);
+
+router.get("/", getUsers);
 
 export default router;
