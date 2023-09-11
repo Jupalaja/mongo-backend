@@ -1,7 +1,7 @@
 import User from "../models/userModel.js";
 import { idFromApiKey, createApiKey } from "../cal-com/handlers/apiKeys.js";
 import { addUsersBasicInfo } from "../cal-com/handlers/userData.js";
-import verifyEvents from "../cal-com/handlers/events.js";
+import { getUserEvents, verifyEvents } from "../cal-com/handlers/events.js";
 import patchUserSchedule from "../cal-com/handlers/schedules.js";
 import { decrypt } from "../cal-com/handlers/utilities/encryption.js";
 
@@ -25,7 +25,14 @@ async function createNewUser(apiKey) {
 	user = { ...user, ...userBasicInfo };
 
 	await verifyEvents(user);
+
+	let userEvents = await getUserEvents(user);
+	console.log(userEvents);
+	user = { ...user, userEvents };
+
 	let userAvail = await patchUserSchedule(user);
+	console.log(userAvail);
+
 	user = { ...user, userAvail };
 
 	return user;

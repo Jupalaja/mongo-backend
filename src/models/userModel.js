@@ -8,6 +8,18 @@ const availSchema = new mongoose.Schema(
 	{ _id: false }
 );
 
+const eventSchema = new mongoose.Schema(
+	{
+		eventId: { type: Number, required: true, unique: true },
+		title: { type: String },
+		slug: { type: String },
+		length: { type: String },
+		description: { type: String },
+		slotInterval: { type: Number },
+	},
+	{ _id: false }
+);
+
 const keySchema = new mongoose.Schema(
 	{
 		iv: { type: String },
@@ -23,6 +35,7 @@ const userSchema = new mongoose.Schema({
 	name: { type: String, required: true, unique: true },
 	email: { type: String, required: true, unique: true },
 	userAvail: { type: Map, of: [availSchema] },
+	userEvents: [eventSchema],
 });
 
 const User = mongoose.model("User", userSchema);

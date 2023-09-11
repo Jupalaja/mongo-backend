@@ -6,33 +6,30 @@ import { events } from "./utilities/paramObjects.js";
 
 const API_URL = process.env.BASE_URL;
 
-async function userHasTheCorrectEvents(user) {
+async function getUserEvents(user) {
 	const { apiKey } = user;
-	let hasVirtual;
-	let hasInPerson;
-	let slugs = [];
-
 	try {
 		const response = await axios.get(
 			`${API_URL}/event-types?apiKey=${decrypt(apiKey)}`
 		);
 
-		if (response.data) {
-			const eventTypes = response.data.event_types;
+		const events = response.data.event_types;
 
-			if (response.data.event_types.length === 0) {
-				console.info("User has no events");
-				return false;
-			}
-
-			slugs = eventTypes.map((event) => event.slug);
-			hasVirtual = eventTypes.some((event) => event.slug === "virtual");
-			hasInPerson = eventTypes.some((event) => event.slug === "presencial");
+		if (response.data && events.length !== 0) {
+			return events.map((event) => ({
+				eventId: event.id,
+				title: event.title,
+				slug: event.slug,
+				description: event.description,
+				length: event.length,
+				slotInterval: event.slotInterval,
+			}));
+		} else {
+			console.info("User has no events");
 		}
 	} catch (err) {
-		console.error(`Failed to verify events for user:`, err);
+		console.error(`Failed to get events for user:`, err);
 	}
-	return hasVirtual && hasInPerson && slugs.length === 2;
 }
 
 async function deleteEvents(user) {
@@ -44,13 +41,12 @@ async function deleteEvents(user) {
 		);
 
 		if (response.data) {
-			const eventTypes = response.data.event_types;
-
-			let deleteOldEvents = eventTypes.map((event) => {
+			const deleteOldEvents = response.data.event_types.map((event) => {
 				return axios.delete(
 					`${API_URL}/event-types/${event.id}?apiKey=${decrypt(apiKey)}`
 				);
 			});
+
 			console.info("All old events deleted successfully!");
 			return Promise.all(deleteOldEvents);
 		}
@@ -63,7 +59,7 @@ async function addNewEvents(user) {
 	const { apiKey } = user;
 
 	try {
-		let newEvents = events.map((event) => {
+		const newEvents = events.map((event) => {
 			return axios.post(
 				`${API_URL}/event-types?apiKey=${decrypt(apiKey)}`,
 				event
@@ -73,14 +69,18 @@ async function addNewEvents(user) {
 		console.info("All New events added successfully!");
 		return Promise.all(newEvents);
 	} catch (err) {
-		console.error(`Failed to delete events for user:`, err);
+		console.error(`Failed to add events for user:`, err);
 	}
 }
 
 async function verifyEvents(user) {
-	const userHasEvents = await userHasTheCorrectEvents(user);
+	const userEvents = await getUserEvents(user);
 
-	if (!userHasEvents) {
+	const hasVirtual = userEvents.some((event) => event.slug === "virtual");
+	const hasPresencial = userEvents.some((event) => event.slug === "presencial");
+	const slugs = userEvents.map((event) => event.slug);
+
+	if (!hasVirtual || !hasPresencial || slugs.length !== 2) {
 		await deleteEvents(user);
 		await addNewEvents(user);
 	} else {
@@ -88,4 +88,4 @@ async function verifyEvents(user) {
 	}
 }
 
-export default verifyEvents;
+export { getUserEvents, verifyEvents };
