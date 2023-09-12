@@ -1,13 +1,25 @@
 import dotenv from "dotenv";
 dotenv.config();
 import { google } from "googleapis";
+import _ from "lodash";
 
 let auth;
 async function authenticate() {
 	if (!auth) {
-		auth = await google.auth.getClient({
-			scopes: ["https://www.googleapis.com/auth/spreadsheets"],
+		auth = await google.auth.fromJSON({
+			type: process.env.TYPE,
+			project_id: process.env.PROJECT_ID,
+			private_key_id: _.unescape(process.env.PRIVATE_KEY_ID),
+			private_key: process.env.PRIVATE_KEY,
+			client_email: process.env.CLIENT_EMAIL,
+			client_id: process.env.CLIENT_ID,
+			auth_uri: process.env.AUTH_URI,
+			token_uri: process.env.TOKEN_URI,
+			auth_provider_x509_cert_url: process.env.AUTH_PROVIDER_X509_CERT_URL,
+			client_x509_cert_url: process.env.CLIENT_X509_CERT_URL,
 		});
+
+		auth.scopes = ["https://www.googleapis.com/auth/spreadsheets"];
 	}
 	return auth;
 }
