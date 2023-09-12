@@ -4,16 +4,16 @@ import apiRoutes from "./routes/apiRoutes.js";
 import sheetsRoutes from "./routes/sheetsRoutes.js";
 import bookingRoutes from "./routes/bookingRoutes.js";
 import cors from "cors";
-const server = express();
+const app = express();
 
 // Middleware
-server.use(express.json());
-server.use(cors());
+app.use(express.json());
+app.use(cors());
 
 // Routes
-server.use("/users", userRoutes);
-server.use("/apikey", apiRoutes);
-server.use("/sheets", sheetsRoutes);
-server.use("/bookings", bookingRoutes);
+app.use("/users", userRoutes);
+app.use("/apikey", apiRoutes);
+app.use("/sheets", sheetsRoutes);
+app.use("/bookings", bookingRoutes);
 
-export default server;
+export default app;
