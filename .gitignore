@@ -5,7 +5,7 @@ output.txt
 node_modules/
 
 #Google API secrets
-secrets.json
+# secrets.json
 
 # Archivos de log y temporales
 logs/
