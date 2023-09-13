@@ -41,6 +41,10 @@ async function deleteEvents(user) {
 		);
 
 		if (response.data) {
+			if (response.data.event_types.length === 0) {
+				console.info("User has no events to delete");
+				return;
+			}
 			const deleteOldEvents = response.data.event_types.map((event) => {
 				return axios.delete(
 					`${API_URL}/event-types/${event.id}?apiKey=${decrypt(apiKey)}`
@@ -80,12 +84,12 @@ async function verifyEvents(user) {
 	const hasPresencial = userEvents.some((event) => event.slug === "presencial");
 	const slugs = userEvents.map((event) => event.slug);
 
-	//if (!hasVirtual || !hasPresencial || slugs.length !== 2) {
-	await deleteEvents(user);
-	await addNewEvents(user);
-	//} else {
-	console.info("User already has the correct events");
-	//}
+	if (!hasVirtual || !hasPresencial || slugs.length !== 2) {
+		await deleteEvents(user);
+		await addNewEvents(user);
+	} else {
+		console.info("User already has the correct events");
+	}
 }
 
 export { getUserEvents, verifyEvents };
