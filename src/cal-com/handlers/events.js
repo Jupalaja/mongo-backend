@@ -80,6 +80,11 @@ async function addNewEvents(user) {
 async function verifyEvents(user) {
 	const userEvents = await getUserEvents(user);
 
+	if (!userEvents) {
+		await addNewEvents(user);
+		return;
+	}
+
 	const hasVirtual = userEvents.some((event) => event.slug === "virtual");
 	const hasPresencial = userEvents.some((event) => event.slug === "presencial");
 	const slugs = userEvents.map((event) => event.slug);
