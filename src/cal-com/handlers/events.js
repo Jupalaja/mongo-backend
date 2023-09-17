@@ -1,10 +1,10 @@
 import dotenv from "dotenv";
 dotenv.config();
 import axios from "axios";
-import { decrypt } from "./utilities/encryption.js";
-import { events } from "./utilities/paramObjects.js";
+import { decrypt } from "../utilities/encryption.js";
+import { events } from "../utilities/paramObjects.js";
 
-const API_URL = process.env.BASE_URL;
+const API_URL = process.env.API_URL;
 
 async function getUserEvents(user) {
 	const { apiKey } = user;

@@ -1,9 +1,9 @@
 import User from "../models/userModel.js";
 import { idFromApiKey, createApiKey } from "../cal-com/handlers/apiKeys.js";
-import { addUsersBasicInfo } from "../cal-com/handlers/userData.js";
+import { addUsersBasicInfo } from "../cal-com/handlers/userInfo.js";
 import { getUserEvents, verifyEvents } from "../cal-com/handlers/events.js";
 import patchUserSchedule from "../cal-com/handlers/schedules.js";
-import { decrypt } from "../cal-com/handlers/utilities/encryption.js";
+import { decrypt } from "../cal-com/utilities/encryption.js";
 
 async function validateUserExist(userId) {
 	const userExists = await User.findOne({ userId });

@@ -15,7 +15,6 @@ const bookingSchema = new mongoose.Schema({
 	start: { type: String, required: true },
 	eventTypeId: { type: Number, required: true },
 	title: { type: String, required: true },
-	start: { type: String, required: true },
 	timeZone: { type: String, required: true },
 	language: { type: String },
 	metadata: { type: Object },

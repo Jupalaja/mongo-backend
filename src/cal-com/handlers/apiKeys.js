@@ -1,9 +1,10 @@
 import dotenv from "dotenv";
 dotenv.config();
 import axios from "axios";
-import { encrypt } from "./utilities/encryption.js";
+import { encrypt } from "../utilities/encryption.js";
 
-export const API_URL = process.env.BASE_URL;
+const API_URL = process.env.API_URL;
+
 const randomString = Math.random().toString(36).substring(2, 7);
 
 export async function idFromApiKey(apiKey) {

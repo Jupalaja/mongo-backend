@@ -3,9 +3,13 @@ import {
 	getVirtualEventInfo,
 	bookVirtual,
 } from "../cal-com/handlers/bookings.js";
+import {getUserByEmail} from "../cal-com/handlers/userInfo.js";
 
 export const virtualBooking = async (req, res) => {
-	const { apiKey, title, start, email, name } = req.body;
+	const { tutor_email, title, start, email, name } = req.body;
+
+	const tutor = await getUserByEmail(tutor_email);
+	const apiKey = tutor.apiKey;
 
 	try {
 		const events = await getUserEvents({ apiKey });
