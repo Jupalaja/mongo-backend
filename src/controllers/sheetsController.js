@@ -1,9 +1,9 @@
 import User from "../models/userModel.js";
-import { transformObject } from "../cal-com/handlers/utilities/transformObject.js";
+import { transformObject } from "../cal-com/utilities/transformObject.js";
 import {
 	getUser,
 	addUserRow,
-} from "../cal-com/handlers/services/googleSheetsService.js";
+} from "../cal-com/services/googleSheetsService.js";
 
 export const sendUsers = async (req, res) => {
 	try {

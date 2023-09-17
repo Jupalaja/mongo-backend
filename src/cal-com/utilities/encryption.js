@@ -35,4 +35,5 @@ function decrypt(hash) {
 	return decrypted.toString();
 }
 
+
 export { encrypt, decrypt };
