@@ -3,14 +3,15 @@ import {
 	getVirtualEventInfo,
 	bookVirtual,
 } from "../cal-com/handlers/bookings.js";
-import {getUserByEmail} from "../cal-com/handlers/userInfo.js";
+import { getUserByEmail } from "../cal-com/handlers/userInfo.js";
+import { findDate } from "../cal-com/utilities/dateHelper.js";
 
 export const virtualBooking = async (req, res) => {
-	const { tutor_email, title, start, email, name } = req.body;
+	const { tutorEmail, title, day, hour, studentEmail, studentName } = req.body;
 
-	const tutor = await getUserByEmail(tutor_email);
+	const tutor = await getUserByEmail(tutorEmail);
 	const apiKey = tutor.apiKey;
-
+	const isoDate = findDate(day, hour);
 	try {
 		const events = await getUserEvents({ apiKey });
 
@@ -21,9 +22,9 @@ export const virtualBooking = async (req, res) => {
 			eventTypeId,
 			apiKey,
 			title,
-			start,
-			email,
-			name,
+			start: isoDate,
+			email: studentEmail,
+			name: studentName,
 		});
 		console.log(newBooking);
 		res.status(201).json({ message: "Clase creada con éxito" });
