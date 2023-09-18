@@ -2,7 +2,7 @@
 
 tmp_file="temp.txt"
 
-ignored_files=(".DS_Store" "secrets.json" "README.md" "node_modules" "output.txt" "temp.txt" "tree_script.sh" "package-lock.json" "ignored_files" ".git" ".env" ".gitignore")
+ignored_files=(".idea" ".DS_Store" "secrets.json" "README.md" "node_modules" "output.txt" "temp.txt" "tree_script.sh" "package-lock.json" "ignored_files" ".git" ".env" ".gitignore")
 
 ignore_pattern=$(IFS='|'; echo "${ignored_files[*]}")
 
