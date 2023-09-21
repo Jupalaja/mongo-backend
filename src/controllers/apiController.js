@@ -1,5 +1,5 @@
 import User from "../models/userModel.js";
-import { idFromApiKey, createApiKey } from "../cal-com/handlers/apiKeys.js";
+import { createApiKey, idFromApiKey } from "../cal-com/handlers/apiKeys.js";
 import { addUsersBasicInfo } from "../cal-com/handlers/userInfo.js";
 import { getUserEvents, verifyEvents } from "../cal-com/handlers/events.js";
 import patchUserSchedule from "../cal-com/handlers/schedules.js";
@@ -54,23 +54,5 @@ export const useApiKey = async (req, res) => {
 		res.status(500).json({
 			message: `${error}`,
 		});
-	}
-};
-
-export const updateUserAvail = async (req, res) => {
-	try {
-		const user = await User.findById(req.params.id);
-		if (!user) {
-			return res.status(404).json({ message: "Usuario no encontrado" });
-		}
-		const userAvail = await patchUserSchedule(user);
-		user.userAvail = userAvail;
-		await user.save();
-		res.status(200).json(user);
-	} catch (error) {
-		console.error(error);
-		res
-			.status(500)
-			.json({ message: "Ha ocurrido un error al actualizar el usuario" });
 	}
 };
