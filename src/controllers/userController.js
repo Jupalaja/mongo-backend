@@ -1,4 +1,5 @@
 import User from "../models/userModel.js";
+import patchUserSchedule from "../cal-com/handlers/schedules.js";
 
 export const getUsers = async (req, res) => {
 	try {
@@ -107,5 +108,22 @@ export const searchUserByEmail = async (req, res) => {
 		res
 			.status(500)
 			.json({ message: "Ha ocurrido un error al buscar los usuarios" });
+	}
+};
+
+export const updateUserAvail = async (req, res) => {
+	try {
+		const user = await User.findById(req.params.id);
+		if (!user) {
+			return res.status(404).json({ message: "Usuario no encontrado" });
+		}
+		user.userAvail = await patchUserSchedule(user);
+		await user.save();
+		res.status(200).json(user);
+	} catch (error) {
+		console.error(error);
+		res
+			.status(500)
+			.json({ message: "Ha ocurrido un error al actualizar el usuario" });
 	}
 };
