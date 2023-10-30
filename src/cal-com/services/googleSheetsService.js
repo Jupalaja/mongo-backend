@@ -37,7 +37,6 @@ async function getUser() {
 	const students = data.values.map((row) => {
 		const [
 			name,
-			username,
 			email,
 			monday,
 			tuesday,
@@ -54,7 +53,6 @@ async function getUser() {
 
 		return {
 			name,
-			username,
 			email,
 			monday,
 			tuesday,
