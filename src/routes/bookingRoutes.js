@@ -1,8 +1,11 @@
 import express from "express";
-import { virtualBooking } from "../controllers/bookingController.js";
+import { virtualBooking, inPersonBooking } from "../controllers/bookingController.js";
 
 const router = express.Router();
 
 router.post("/virtual", virtualBooking);
+router.post("/inperson", inPersonBooking);
+
+
 
 export default router;

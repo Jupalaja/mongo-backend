@@ -5,7 +5,7 @@ import { decrypt } from "../utilities/encryption.js";
 
 const API_URL = process.env.API_URL;
 
-export async function bookVirtual(user) {
+export async function bookClass(user) {
 	const { eventTypeId, apiKey, title, start, email, name, userId } = user;
 
 	const newEvent = {
@@ -37,4 +37,8 @@ export async function bookVirtual(user) {
 
 export function getVirtualEventInfo(events) {
 	return events[0].slug === "virtual" ? events[0].eventId : events[1].eventId;
+}
+
+export function getInPersonEventInfo(events) {
+	return events[0].slug === "presencial" ? events[0].eventId : events[1].eventId;
 }
