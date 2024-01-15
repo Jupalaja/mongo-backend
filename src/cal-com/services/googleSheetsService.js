@@ -27,7 +27,7 @@ async function authenticate() {
 async function getUser() {
 	const auth = await authenticate();
 	const sheets = google.sheets({ version: "v4", auth });
-	const range = `Horarios!A2:M`;
+	const range = `Horarios!A2:O`;
 
 	const { data } = await sheets.spreadsheets.values.get({
 		spreadsheetId: process.env.SHEET_ID,
@@ -49,6 +49,8 @@ async function getUser() {
 			middle,
 			high,
 			zone,
+			active,
+			school,
 		] = row;
 
 		return {
@@ -65,6 +67,8 @@ async function getUser() {
 			middle,
 			high,
 			zone,
+			active,
+			school,
 		};
 	});
 

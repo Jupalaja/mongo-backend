@@ -5,14 +5,13 @@ import { decrypt } from "../utilities/encryption.js";
 
 const API_URL = process.env.API_URL;
 
-async function getScheduleId(user) {
+export async function getScheduleId(user) {
 	if (user.schedule) {
 		console.info("User already Schedule setted up");
-		return;
+		return user.schedule.id;
 	}
 
 	const { apiKey } = user;
-	let scheduleId;
 
 	try {
 		const response = await axios.get(`${API_URL}/schedules`, {
@@ -21,11 +20,11 @@ async function getScheduleId(user) {
 			},
 		});
 
-		if (response.data) {
-			const { schedules } = response.data;
-			scheduleId = schedules[0].id;
-			return scheduleId;
-		}
+        if (response.data && response.data.schedules && response.data.schedules.length > 0) {
+            return response.data.schedules[0].id;
+        } else {
+            return null;
+        }
 	} catch (err) {
 		console.error(`Failed to get schedule information from user:`, err);
 	}
